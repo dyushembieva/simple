@@ -1,0 +1,26 @@
+[Unit]
+Description=gunicorn daemon for multipage project
+Requires=gunicorn_multipage.socket
+After=network.target
+
+[Service]
+PermissionsStartOnly=True
+User=saikal
+Group=www-data
+RuntimeDirectory=gunicorn
+RuntimeDirectoryMode=0775
+PIDFile=/run/gunicorn/pid_multipage
+WorkingDirectory=/home/saikal/multipage
+ExecStart=/home/saikal/multipage/env/bin/gunicorn \
+          --access-logfile /home/saikal/multipage/logs/access.log \
+          --error-logfile /home/saikal/multipage/logs/error.log \
+          --pid /run/gunicorn/pid_multipage   \
+          --env DJANGO_SETTINGS_MODULE=main.settings_prod \
+          --workers 3 \
+          --bind unix:/run/gunicorn/multipage_socket main.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

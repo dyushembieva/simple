@@ -1,0 +1,8 @@
+[Unit]
+Description=gunicorn socket for multipage project
+
+[Socket]
+ListenStream=/run/gunicorn/multipage_socket
+
+[Install]
+WantedBy=sockets.target
